@@ -1,6 +1,6 @@
 {
   "name": "Mon Entreprise App",
-  "short_name": "Entreprise",
+  "short_name": "RubMax Servicos",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
