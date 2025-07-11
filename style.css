@@ -6,30 +6,51 @@ body {
   background: #f4f4f4;
 }
 
-header {
-  background: #317EFB;
-  color: white;
-  padding: 1rem;
-}
+
 
 .header-container {
   display: flex;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
-  gap: 1rem;
   padding: 1rem;
   background-color: #317EFB;
   color: white;
-  flex-wrap: wrap;
 }
 
-.header-container img#logo {
-  width: 64px;
-  height: 64px;
+.logo-container {
+  width: 30%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-container img#logo {
+  width: 80px;
+  height: 80px;
   object-fit: contain;
   border-radius: 8px;
   background-color: white;
   padding: 5px;
+}
+
+.text-container {
+  width: 70%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.text-container h1 {
+  margin: 0;
+  font-size: 1.8em;
+}
+
+.text-container h2 {
+  margin: 0;
+  font-size: 1.2em;
+  font-weight: normal;
+  opacity: 0.9;
 }
 
 
