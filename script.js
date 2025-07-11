@@ -16,3 +16,36 @@ fetch(csvURL)
     document.getElementById('entreprise').textContent = 'Erreur de chargement';
     console.error(err);
   });
+
+
+
+  let deferredPrompt;
+const installBtn = document.getElementById('installBtn');
+
+// Écouteur pour l'événement 'beforeinstallprompt'
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault(); // Empêche le prompt automatique
+  deferredPrompt = e;
+  installBtn.style.display = 'block'; // Affiche le bouton
+
+  installBtn.addEventListener('click', () => {
+    installBtn.style.display = 'none'; // Cache le bouton après clic
+    deferredPrompt.prompt(); // Montre la popup système
+
+    deferredPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        console.log('Utilisateur a accepté d’installer l’app.');
+      } else {
+        console.log('Utilisateur a refusé l’installation.');
+      }
+      deferredPrompt = null;
+    });
+  });
+});
+
+// Masquer le bouton si l’app est déjà installée
+window.addEventListener('appinstalled', () => {
+  console.log('L’app est installée.');
+  installBtn.style.display = 'none';
+});
+
