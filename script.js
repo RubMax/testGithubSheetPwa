@@ -8,6 +8,7 @@ fetch(csvURL)
     const a2Value = lines[1].split(',')[0]; // A2 = première colonne de la 2e ligne
     const a3Value = lines[2].split(',')[1];
     document.getElementById('entreprise').textContent = a2Value || 'Nom introuvable';
+  document.getElementById('entreprise').textContent = a2Value || 'Nom introuvable';
   })
   .catch(err => {
     document.getElementById('entreprise').textContent = 'Erreur de chargement';
