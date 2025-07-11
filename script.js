@@ -6,6 +6,7 @@ fetch(csvURL)
   .then(data => {
     const lines = data.split('\n');
     const a2Value = lines[1].split(',')[0]; // A2 = première colonne de la 2e ligne
+    const a3Value = lines[2].split(',')[1];
     document.getElementById('entreprise').textContent = a2Value || 'Nom introuvable';
   })
   .catch(err => {
