@@ -6,16 +6,26 @@ fetch(csvURL)
   .then(data => {
     const lines = data.split('\n');
     const cols = lines[1].split(',');
-    const a2Value = cols[0]; // Nom de l’entreprise (cellule A2)
-    const b2Value = cols[1]; // Slogan (cellule B2)
+
+    const nom = cols[0];     // A2
+    const slogan = cols[1];  // B2
+    const logoURL = cols[2]; // C2 (URL de l'image)
+
+    document.getElementById('entreprise').textContent = nom || 'Nom introuvable';
+    document.getElementById('slogan').textContent = slogan || '';
     
-    document.getElementById('entreprise').textContent = a2Value || 'Nom introuvable';
-    document.getElementById('slogan').textContent = b2Value || '';
+    const logo = document.getElementById('logo');
+    if (logoURL && logo) {
+      logo.src = logoURL.trim();
+    }
   })
   .catch(err => {
     document.getElementById('entreprise').textContent = 'Erreur de chargement';
     console.error(err);
   });
+
+
+
 
 
 

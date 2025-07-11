@@ -12,6 +12,27 @@ header {
   padding: 1rem;
 }
 
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #317EFB;
+  color: white;
+  flex-wrap: wrap;
+}
+
+.header-container img#logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 8px;
+  background-color: white;
+  padding: 5px;
+}
+
+
 main {
   margin: 2rem;
 }
