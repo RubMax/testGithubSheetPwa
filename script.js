@@ -6,9 +6,9 @@ fetch(csvURL)
   .then(data => {
     const lines = data.split('\n');
     const a2Value = lines[1].split(',')[0]; // A2 = première colonne de la 2e ligne
-    const a3Value = lines[1].split(',')[1];
+    const b2Value = lines[1].split(',')[0];
     document.getElementById('entreprise').textContent = a2Value || 'Nom introuvable';
-  document.getElementById('entreprise').textContent = a3Value || 'Nom introuvable';
+  document.getElementById('entreprise').textContent = b2Value || 'Nom introuvable';
   })
   .catch(err => {
     document.getElementById('entreprise').textContent = 'Erreur de chargement';
