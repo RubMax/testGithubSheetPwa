@@ -5,8 +5,12 @@ fetch(csvURL)
   .then(response => response.text())
   .then(data => {
     const lines = data.split('\n');
-    const a2Value = lines[1].split(',')[0]; // A2 = première colonne de la 2e ligne
+    const cols = lines[1].split(',');
+    const a2Value = cols[0]; // Nom de l’entreprise (cellule A2)
+    const b2Value = cols[1]; // Slogan (cellule B2)
+    
     document.getElementById('entreprise').textContent = a2Value || 'Nom introuvable';
+    document.getElementById('slogan').textContent = b2Value || '';
   })
   .catch(err => {
     document.getElementById('entreprise').textContent = 'Erreur de chargement';
