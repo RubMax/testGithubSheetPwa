@@ -1,49 +1,78 @@
+const SHEET_NAME = "Produits";
+const ADMIN_EMAIL = "rubmaxben@gmail.com";
 
+fetch('https://script.google.com/macros/s/TON_DEPLOYMENT_ID/exec?page=api')
+  .then(res => res.json())
+  .then(displayProduits);
+  
+  
+  return HtmlService
+    .createHtmlOutputFromFile("index")
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
 
-const csvURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSvyFiMOAyagtGz0dZ-4u1K6AGpNNgqyRNEzV2OarlR2rl0N5UvoCURUeOj9RaxBCGDtd_c8-INiIde/pub?gid=0&single=true&output=csv';
+function include(filename) {
+  return HtmlService.createHtmlOutputFromFile(filename).getContent();
+}
 
-fetch(csvURL)
-  .then(response => response.text())
-  .then(data => {
-    const lines = data.trim().split('\n').map(line => line.split(','));
-    const headers = lines.shift(); // En-têtes
+function getData() {
+  try {
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+    const rows = sheet.getDataRange().getValues();
+    rows.shift();
+    return rows.map(r => ({
+      section:     r[0],
+      nom:         r[1],
+      image:       r[2],
+      description: r[3],
+      prix:        (typeof r[4] === 'number') ? r[4].toString().replace('.', ',') : (r[4] || ""),
+      tailles:     r[5] || "",
+      code:        r[6] || "",
+      pub:         r[7] || "", // Colonne H - contenu de la pub
+      pubInterval: isNaN(r[8]) ? 25000 : r[8] * 1000 // Colonne I - intervalle en secondes
+    }));
+  } catch (err) {
+    throw new Error("Erreur getData: " + err.message);
+  }
+}
 
-    const produits = lines.map(row => {
-      return {
-        section:     row[0],
-        nom:         row[1],
-        image:       row[2],
-        description: row[3],
-        prix:        row[4],
-        tailles:     row[5],
-        code:        row[6],
-        pub:         row[7],
-        pubInterval: row[8]
-      };
+function saveData(data) {
+  try {
+    if (!Array.isArray(data)) throw new Error("Données invalides");
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+    sheet.clearContents();
+    sheet.appendRow(["Section", "Nom", "Image", "Description", "Prix", "Tailles", "Code", "Pub", "Intervalle"]);
+    
+    data.forEach(item => {
+      if (
+        typeof item.section !== "string" ||
+        typeof item.nom !== "string" ||
+        typeof item.image !== "string" ||
+        typeof item.description !== "string" ||
+        (typeof item.prix !== "string" && typeof item.prix !== "number") ||
+        typeof item.tailles !== "string" ||
+        typeof item.code !== "string" ||
+        typeof item.pub !== "string"
+      ) throw new Error("Format d'article invalide");
+      
+      const prixValue = typeof item.prix === 'number' 
+        ? item.prix.toString().replace('.', ',') 
+        : item.prix;
+      
+      sheet.appendRow([
+        item.section,
+        item.nom,
+        item.image,
+        item.description,
+        prixValue,
+        item.tailles,
+        item.code,
+        item.pub,
+        item.pubInterval / 1000 // Convertir en secondes pour le sheet
+      ]);
     });
-
-    // Afficher le nom d'entreprise en A2 (1ère colonne 2e ligne)
-    const entreprise = lines[0][0];
-    document.getElementById('entreprise').textContent = entreprise || "Nom introuvable";
-
-    // Générer les cartes dans un conteneur
-    const container = document.getElementById('produits');
-    container.innerHTML = ""; // vider le contenu
-
-    produits.forEach(p => {
-      const card = document.createElement('div');
-      card.className = "carte";
-      card.innerHTML = `
-        <img src="${p.image}" alt="${p.nom}" />
-        <h3>${p.nom}</h3>
-        <p>${p.description}</p>
-        <p><strong>Prix:</strong> ${p.prix}</p>
-        <p><strong>Tailles:</strong> ${p.tailles}</p>
-      `;
-      container.appendChild(card);
-    });
-  })
-  .catch(err => {
-    console.error("Erreur de chargement :", err);
-    document.getElementById('entreprise').textContent = "Erreur de chargement des données";
-  });
+    return { success: true };
+  } catch (err) {
+    throw new Error("Erreur saveData: " + err.message);
+  }
+}
