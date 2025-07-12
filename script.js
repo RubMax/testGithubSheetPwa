@@ -1,7 +1,7 @@
 const SHEET_NAME = "Produits";
 const ADMIN_EMAIL = "rubmaxben@gmail.com";
 
-fetch('https://script.google.com/macros/s/TON_DEPLOYMENT_ID/exec?page=api')
+fetch('https://script.google.com/macros/s/AKfycbwoTyj8mpGYPfWCOxszGA-SPYTSBsJbJoHyFKgIr-b5xSAu-CO9pgE3bCebLGAWCVDnPg/exec?page=api')
   .then(res => res.json())
   .then(displayProduits);
   
