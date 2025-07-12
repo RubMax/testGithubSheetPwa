@@ -1,51 +1,39 @@
 // Remplace ce lien par le bon lien CSV publié de ta feuille
+//const csvURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSvyFiMOAyagtGz0dZ-4u1K6AGpNNgqyRNEzV2OarlR2rl0N5UvoCURUeOj9RaxBCGDtd_c8-INiIde/pub?gid=0&single=true&output=csv';
+
+//fetch(csvURL)
+ // .then(response => response.text())
+//    const lines = data.split('\n');
+ //   const a2Value = lines[1].split(',')[0]; // A2 = première colonne de la 2e ligne
+ //   document.getElementById('entreprise').textContent = a2Value || 'Nom introuvable';
+ // })
+ // .catch(err => {
+ //   document.getElementById('entreprise').textContent = 'Erreur de chargement';
+  //  console.error(err);
+ // });
+
+
 const csvURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSvyFiMOAyagtGz0dZ-4u1K6AGpNNgqyRNEzV2OarlR2rl0N5UvoCURUeOj9RaxBCGDtd_c8-INiIde/pub?gid=0&single=true&output=csv';
 
 fetch(csvURL)
   .then(response => response.text())
   .then(data => {
-    const lines = data.split('\n');
-    const cols = lines[1].split(',');
-    const a2Value = cols[0]; // Nom de l’entreprise (cellule A2)
-    const b2Value = cols[1]; // Slogan (cellule B2)
     
-    document.getElementById('entreprise').textContent = a2Value || 'Nom introuvable';
-    document.getElementById('slogan').textContent = b2Value || '';
-  })
-  .catch(err => {
-    document.getElementById('entreprise').textContent = 'Erreur de chargement';
-    console.error(err);
-  });
-
-
-
-  let deferredPrompt;
-const installBtn = document.getElementById('installBtn');
-
-// Écouteur pour l'événement 'beforeinstallprompt'
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault(); // Empêche le prompt automatique
-  deferredPrompt = e;
-  installBtn.style.display = 'block'; // Affiche le bouton
-
-  installBtn.addEventListener('click', () => {
-    installBtn.style.display = 'none'; // Cache le bouton après clic
-    deferredPrompt.prompt(); // Montre la popup système
-
-    deferredPrompt.userChoice.then((choiceResult) => {
-      if (choiceResult.outcome === 'accepted') {
-        console.log('Utilisateur a accepté d’installer l’app.');
-      } else {
-        console.log('Utilisateur a refusé l’installation.');
-      }
-      deferredPrompt = null;
-    });
-  });
-});
-
-// Masquer le bouton si l’app est déjà installée
-window.addEventListener('appinstalled', () => {
-  console.log('L’app est installée.');
-  installBtn.style.display = 'none';
-});
-
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+    const rows = sheet.getDataRange().getValues();
+    rows.shift();
+    return rows.map(r => ({
+      section:     r[0],
+      nom:         r[1],
+      image:       r[2],
+      description: r[3],
+      prix:        (typeof r[4] === 'number') ? r[4].toString().replace('.', ',') : (r[4] || ""),
+      tailles:     r[5] || "",
+      code:        r[6] || "",
+      pub:         r[7] || "", // Colonne H - contenu de la pub
+      pubInterval: isNaN(r[8]) ? 25000 : r[8] * 1000 // Colonne I - intervalle en secondes
+    }));
+  } catch (err) {
+    throw new Error("Erreur getData: " + err.message);
+  }
+//}
